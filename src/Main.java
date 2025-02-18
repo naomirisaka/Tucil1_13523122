@@ -1,10 +1,14 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
 
-// check if M, N, and P ada & valid, piece letter unique
+// check if M, N, P, and config type ada & valid
+// validate piece letter unique (tidak ada huruf yang ngulang)
+// kasi color on each piece
 
 public class Main {
     public static void main(String[] args) {
@@ -44,31 +48,56 @@ public class Main {
         }
     }
     
-    // hasnt worked yet
-    public static void readInputFile(Scanner fileScanner) {
-        int N = fileScanner.nextInt(); // rows
-        int M = fileScanner.nextInt(); // columns
-        int P = fileScanner.nextInt(); // num of pieces
-        fileScanner.nextLine();
+    public static List<Piece> readInputFile(Scanner fileScanner) {
+        int N = fileScanner.nextInt();
+        int M = fileScanner.nextInt();
+        int P = fileScanner.nextInt();
+        fileScanner.nextLine(); 
 
-        String config_type = fileScanner.nextLine();
+        String config_type = fileScanner.nextLine(); // MASIH FOR DEFAULT ONLY
+        Map<Character, List<String>> pieceShapes = new LinkedHashMap<>();
 
-        // default config
-        if (config_type.equalsIgnoreCase("default")) {
-            Set<Character> uniquePieces = new HashSet<>();
+        while (fileScanner.hasNextLine()) {
+            String pieceLine = fileScanner.nextLine().trim();
+            if (pieceLine.length() == 0) continue; 
 
-            for (int i = 0; i < P; i++) {
-                String piece = fileScanner.nextLine().trim();
-                char pieceLetter = piece.charAt(0); 
-                uniquePieces.add(pieceLetter);
-            }
+            char firstLetter = pieceLine.charAt(0);
+            pieceShapes.putIfAbsent(firstLetter, new ArrayList<>());
+            pieceShapes.get(firstLetter).add(pieceLine);
+        }
 
-            System.out.println("Dimensi papan: " + N + "x" + M);
-            System.out.println("Tipe konfigurasi: " + config_type);
-            System.out.println("Solusi:");
+        List<Piece> pieces = new ArrayList<>();
+        for (Map.Entry<Character, List<String>> entry : pieceShapes.entrySet()) {
+            char letter = entry.getKey();
+            List<String> shapeLines = entry.getValue();
+            pieces.add(new Piece(shapeLines, letter));
+        }
+
+        System.out.println("Dimensi papan: " + N + "x" + M);
+        System.out.println("Tipe konfigurasi: " + config_type);
+        System.out.println("Solusi:");
     
-            for (char pieceLetter : uniquePieces) {
-                System.out.println("Piece " + pieceLetter);
+        return pieces;
+    }
+}
+
+class Piece {
+    char letter;
+    char[][] shape;
+
+    Piece(List<String> shapeLines, char letter) {
+        this.letter = letter;
+        int height = shapeLines.size();
+        int width = 0;
+        for (String line : shapeLines) {
+            width = Math.max(width, line.length());
+        }
+
+        shape = new char[height][width];
+        for (int i = 0; i < height; i++) {
+            String line = shapeLines.get(i);
+            for (int j = 0; j < width; j++) {
+                shape[i][j] = (j < line.length()) ? line.charAt(j) : ' ';
             }
         }
     }
