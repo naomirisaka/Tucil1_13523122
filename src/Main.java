@@ -130,12 +130,12 @@ public class Main {
                 long endTime = System.nanoTime();
 
                 if (triesAmt > 0 && PuzzleSolver.isBoardFull(board)) {
-                    Main.printBoard(board);
+                    printBoard(board);
                     long duration = (endTime - startTime) / 1000000; // duration in ms
                     System.out.println("Jumlah kasus yang ditinjau: " + triesAmt);
                     System.out.println("Waktu eksekusi: " + duration + " ms");
-                    Main.saveSolution(board, scanner);
-                    Main.saveSolutionAsImage(board, scanner); 
+                    saveSolution(board, scanner);
+                    saveSolutionAsImage(board, scanner); 
                 } else {
                     long duration = (endTime - startTime) / 1000000; // duration in ms
                     System.out.println();
@@ -262,7 +262,7 @@ public class Main {
     }
     
     // displays solution board in CLI 
-    public static void printBoard(char[][] board) {
+    private static void printBoard(char[][] board) {
         System.out.println();
         System.out.println("Solusi ditemukan.");
         for (char[] row : board) {
@@ -279,7 +279,7 @@ public class Main {
     }
 
     // saves solution board as a text file
-    public static void saveSolution(char[][] board, Scanner scanner) {
+    private static void saveSolution(char[][] board, Scanner scanner) {
         System.out.println();
         System.out.print("Apakah Anda ingin menyimpan solusi dalam bentuk teks? (ya/tidak) ");
         String saveOpt = scanner.nextLine();
@@ -334,7 +334,7 @@ public class Main {
     }
 
     // saves solution board as an image file
-    public static void saveSolutionAsImage(char[][] board, Scanner scanner) {
+    private static void saveSolutionAsImage(char[][] board, Scanner scanner) {
         System.out.println();
         System.out.print("Apakah Anda ingin menyimpan solusi dalam bentuk gambar? (ya/tidak) ");
         String saveOpt = scanner.nextLine();

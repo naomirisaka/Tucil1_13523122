@@ -9,22 +9,15 @@ public class PuzzleSolver {
             triesAmt++; // incremented per iteration (permutation)
             clearBoard(board); // reset board for each iteration
             
-            if (tryPlaceAllPieces(board, permutation, N, M)) {
+            if (canPlaceAllPieces(board, permutation, N, M)) {
                 return triesAmt; // all pieces are succesfully placed on the board
             }
         }
         return -triesAmt; // no solution found
     }
     
-    // resets the working board to empty
-    public static void clearBoard(char[][] board) {
-        for (int i = 0; i < board.length; i++) {
-            Arrays.fill(board[i], ' ');
-        }
-    }
-
     // generates all possible permutations of the pieces
-    public static List<List<Piece>> generatePermutations(List<Piece> pieces) {
+    private static List<List<Piece>> generatePermutations(List<Piece> pieces) {
         List<List<Piece>> permutations = new ArrayList<>();
         generatePermutationsHelper(pieces, 0, permutations);
         return permutations;
@@ -51,8 +44,15 @@ public class PuzzleSolver {
         pieces.set(j, temp);
     }
 
+    // resets the working board to empty
+    private static void clearBoard(char[][] board) {
+        for (int i = 0; i < board.length; i++) {
+            Arrays.fill(board[i], ' ');
+        }
+    }
+
     // tries placing all pieces on the board
-    public static boolean tryPlaceAllPieces(char[][] board, List<Piece> pieces, int N, int M) {
+    private static boolean canPlaceAllPieces(char[][] board, List<Piece> pieces, int N, int M) {
         for (Piece piece : pieces) {
             boolean piecePlaced = false;
             List<Piece> allOrientations = piece.getAllOrientations();
