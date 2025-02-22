@@ -52,7 +52,7 @@ public class Main {
         COLOR_MAP.put('D', new Color(0, 0, 255));    // blue
         COLOR_MAP.put('E', new Color(255, 0, 255));  // magenta
         COLOR_MAP.put('F', new Color(0, 255, 255));  // cyan
-        COLOR_MAP.put('G', new Color(255, 85, 85));  // bright red
+        COLOR_MAP.put('G', new Color(250, 85, 85));  // bright red
         COLOR_MAP.put('H', new Color(85, 255, 85));  // bright green
         COLOR_MAP.put('I', new Color(255, 255, 85)); // bright yellow
         COLOR_MAP.put('J', new Color(85, 85, 255));  // bright blue
@@ -134,96 +134,95 @@ public class Main {
         scanner.close();
     }
 
-// reads input file and validate its contents
-private static List<Piece> readInputFile(Scanner fileScanner) throws Exception {
-    // N (number of rows) validation 
-    if (!fileScanner.hasNextInt()) {  
-        throw new Exception("File tidak memiliki nilai N.");
-    } 
-    N = fileScanner.nextInt();
-    if (N <= 0) {
-        throw new Exception("N harus bernilai lebih besar dari 0.");
-    }
-    
-    // M (number of cols) validation
-    if (!fileScanner.hasNextInt()) {
-        throw new Exception("File tidak memiliki nilai M.");
-    }
-    M = fileScanner.nextInt();
-    if (M <= 0) {
-        throw new Exception("M harus bernilai lebih besar dari 0.");
-    }
-
-    // P (number of pieces) validation
-    if (!fileScanner.hasNextInt()) {
-        throw new Exception("File tidak memiliki nilai P.");
-    }
-    int P = fileScanner.nextInt();  // number of pieces
-    if (P <= 0) {
-        throw new Exception("P harus bernilai lebih besar dari 0.");
-    }
-
-    // configuration type validation 
-    fileScanner.nextLine(); 
-    if (!fileScanner.hasNextLine()) {
-        throw new Exception("File tidak memiliki tipe konfigurasi.");
-    }
-    String configType = fileScanner.nextLine().trim(); // configuration type
-    if (configType.isEmpty()) {
-        throw new Exception("Tipe konfigurasi tidak boleh kosong.");
-    }
-    if (!configType.equalsIgnoreCase("default")) {
-        throw new Exception("Tipe konfigurasi yang tersedia adalah 'default'.");
-    }
-
-    // pieces reading and validation
-    Map<Character, List<String>> pieceShapes = new LinkedHashMap<>();
-    Set<Character> usedLetters = new HashSet<>(); 
-    Character currPiece = null;
-
-    while (fileScanner.hasNextLine()) {
-        String pieceLine = fileScanner.nextLine(); // Keep leading spaces
-        if (pieceLine.trim().isEmpty()) { 
-            currPiece = null; 
-            continue;
+    // reads input file and validate its contents
+    private static List<Piece> readInputFile(Scanner fileScanner) throws Exception {
+        // N (number of rows) validation 
+        if (!fileScanner.hasNextInt()) {  
+            throw new Exception("File tidak memiliki nilai N.");
+        } 
+        N = fileScanner.nextInt();
+        if (N <= 0) {
+            throw new Exception("N harus bernilai lebih besar dari 0.");
+        }
+        
+        // M (number of cols) validation
+        if (!fileScanner.hasNextInt()) {
+            throw new Exception("File tidak memiliki nilai M.");
+        }
+        M = fileScanner.nextInt();
+        if (M <= 0) {
+            throw new Exception("M harus bernilai lebih besar dari 0.");
         }
 
-        char firstLetter = pieceLine.trim().charAt(0);
-        for (char c : pieceLine.trim().toCharArray()) {
-            // alphabet validation 
-            if (!Character.isLetter(c) && c != ' ') { 
-                throw new Exception("Terdapat baris yang mengandung karakter bukan alphabet.");
+        // P (number of pieces) validation
+        if (!fileScanner.hasNextInt()) {
+            throw new Exception("File tidak memiliki nilai P.");
+        }
+        int P = fileScanner.nextInt();  // number of pieces
+        if (P <= 0) {
+            throw new Exception("P harus bernilai lebih besar dari 0.");
+        }
+
+        // configuration type validation 
+        fileScanner.nextLine(); 
+        if (!fileScanner.hasNextLine()) {
+            throw new Exception("File tidak memiliki tipe konfigurasi.");
+        }
+        String configType = fileScanner.nextLine().trim(); // configuration type
+        if (configType.isEmpty()) {
+            throw new Exception("Tipe konfigurasi tidak boleh kosong.");
+        }
+        if (!configType.equalsIgnoreCase("default")) {
+            throw new Exception("Tipe konfigurasi yang tersedia adalah 'default'.");
+        }
+
+        // pieces reading and validation
+        Map<Character, List<String>> pieceShapes = new LinkedHashMap<>();
+        Set<Character> usedLetters = new HashSet<>(); 
+        Character currPiece = null;
+
+        while (fileScanner.hasNextLine()) {
+            String pieceLine = fileScanner.nextLine(); // Keep leading spaces
+            if (pieceLine.trim().isEmpty()) { 
+                currPiece = null; 
+                continue;
             }
-            if (c != firstLetter && c != ' ') {
-                throw new Exception("Terdapat baris yang mengandung lebih dari satu huruf.");
+
+            char firstLetter = Character.toUpperCase(pieceLine.trim().charAt(0));  // set all letters to uppercase
+            for (char c : pieceLine.trim().toCharArray()) {
+                // alphabet validation 
+                if (!Character.isLetter(c) && c != ' ') { 
+                    throw new Exception("Terdapat baris yang mengandung karakter bukan alphabet.");
+                }
+                if (c != firstLetter && c != ' ') {
+                    throw new Exception("Terdapat baris yang mengandung lebih dari satu huruf.");
+                }
             }
+
+            // unique letter validation
+            if (currPiece != null && firstLetter != currPiece && usedLetters.contains(firstLetter)) {
+                throw new Exception("Huruf '" + firstLetter + "' digunakan oleh lebih dari satu piece yang terpisah.");
+            }
+
+            usedLetters.add(firstLetter); 
+            pieceShapes.putIfAbsent(firstLetter, new ArrayList<>());
+            pieceShapes.get(firstLetter).add(pieceLine); // Add the whole line including spaces
+            currPiece = firstLetter; 
         }
 
-        // unique letter validation
-        if (currPiece != null && firstLetter != currPiece && usedLetters.contains(firstLetter)) {
-            throw new Exception("Huruf '" + firstLetter + "' digunakan oleh lebih dari satu piece yang terpisah.");
+        // P validation according to the number of pieces read
+        if (pieceShapes.size() != P) {
+            throw new Exception("Jumlah piece tidak sesuai dengan nilai P.");
         }
 
-        usedLetters.add(firstLetter); 
-        pieceShapes.putIfAbsent(firstLetter, new ArrayList<>());
-        pieceShapes.get(firstLetter).add(pieceLine); // Add the whole line including spaces
-        currPiece = firstLetter; 
-    }
+        List<Piece> pieces = new ArrayList<>();
+        for (Map.Entry<Character, List<String>> entry : pieceShapes.entrySet()) {
+            pieces.add(new Piece(entry.getValue(), entry.getKey()));
+        }
 
-    // P validation according to the number of pieces read
-    if (pieceShapes.size() != P) {
-        throw new Exception("Jumlah piece tidak sesuai dengan nilai P.");
+        return pieces;
     }
-
-    List<Piece> pieces = new ArrayList<>();
-    for (Map.Entry<Character, List<String>> entry : pieceShapes.entrySet()) {
-        pieces.add(new Piece(entry.getValue(), entry.getKey()));
-    }
-
-    return pieces;
-}
    
-    
     // assigns colors to pieces based on their letters
     private static void assignColors(List<Piece> pieces) {
         for (Piece piece : pieces) {
@@ -259,13 +258,13 @@ private static List<Piece> readInputFile(Scanner fileScanner) throws Exception {
     // saves solution board as a text file
     public static void saveSolution(char[][] board, Scanner scanner) {
         System.out.println();
-        System.out.print("Apakah Anda ingin menyimpan solusi? (ya/tidak) ");
+        System.out.print("Apakah Anda ingin menyimpan solusi dalam bentuk teks? (ya/tidak) ");
         String saveOpt = scanner.nextLine();
 
         // save option validation
         while (!(saveOpt.equalsIgnoreCase("ya") || saveOpt.equalsIgnoreCase("tidak") || saveOpt.isEmpty())) {
             System.out.println();
-            System.out.print("Apakah Anda ingin menyimpan solusi? (ya/tidak) ");
+            System.out.print("Apakah Anda ingin menyimpan solusi dalam bentuk teks? (ya/tidak) ");
             saveOpt = scanner.nextLine();
         }
 
