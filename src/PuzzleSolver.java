@@ -17,17 +17,20 @@ public class PuzzleSolver {
         if (solutionFound && isBoardFull(board)) {
             Main.printBoard(board);
             long duration = (endTime - startTime) / 1000000; // duration in ms
-        System.out.println("Jumlah kasus yang ditinjau: " + triesAmt);
-        System.out.println("Waktu eksekusi: " + duration + " ms");
+            System.out.println("Jumlah kasus yang ditinjau: " + triesAmt);
+            System.out.println("Waktu eksekusi: " + duration + " ms");
             Main.saveSolution(board, scanner);
             Main.saveSolutionAsImage(board, scanner); 
             return true;
-        } 
-
-        long duration = (endTime - startTime) / 1000000; // duration in ms
-        System.out.println("Jumlah kasus yang ditinjau: " + triesAmt);
-        System.out.println("Waktu eksekusi: " + duration + " ms");
-        return false;
+        } else {
+            long duration = (endTime - startTime) / 1000000; // duration in ms
+            System.out.println();
+            System.out.println("Tidak ada solusi yang ditemukan.");
+            System.out.println();
+            System.out.println("Jumlah kasus yang ditinjau: " + triesAmt);
+            System.out.println("Waktu eksekusi: " + duration + " ms");
+            return false;
+        }
     }
 
     // checks whether the board is fully filled with pieces

@@ -117,10 +117,7 @@ public class Main {
             try {
                 List<Piece> pieces = readInputFile(fileScanner);    
                 assignColors(pieces);
-                if (!PuzzleSolver.placePieces(pieces, N, M, scanner)) {
-                    System.out.println();
-                    System.out.println("Tidak ada solusi yang ditemukan.");
-                }
+                PuzzleSolver.placePieces(pieces, N, M, scanner);
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
                 return; 
