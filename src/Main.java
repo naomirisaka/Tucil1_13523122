@@ -117,7 +117,33 @@ public class Main {
             try {
                 List<Piece> pieces = readInputFile(fileScanner);    
                 assignColors(pieces);
-                PuzzleSolver.placePieces(pieces, N, M, scanner);
+
+                
+                char[][] board = new char[N][M];
+                for (int i = 0; i < N; i++) {
+                    Arrays.fill(board[i], ' ');
+                }
+                
+                long triesAmt = 0; 
+                long startTime = System.nanoTime();
+                triesAmt = PuzzleSolver.tryAllConfigurations(board, pieces, N, M, triesAmt);
+                long endTime = System.nanoTime();
+
+                if (triesAmt > 0 && PuzzleSolver.isBoardFull(board)) {
+                    Main.printBoard(board);
+                    long duration = (endTime - startTime) / 1000000; // duration in ms
+                    System.out.println("Jumlah kasus yang ditinjau: " + triesAmt);
+                    System.out.println("Waktu eksekusi: " + duration + " ms");
+                    Main.saveSolution(board, scanner);
+                    Main.saveSolutionAsImage(board, scanner); 
+                } else {
+                    long duration = (endTime - startTime) / 1000000; // duration in ms
+                    System.out.println();
+                    System.out.println("Tidak ada solusi yang ditemukan.");
+                    System.out.println();
+                    System.out.println("Jumlah kasus yang ditinjau: " + -triesAmt);
+                    System.out.println("Waktu eksekusi: " + duration + " ms");
+                }
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
                 return; 

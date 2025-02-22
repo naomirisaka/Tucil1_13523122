@@ -1,52 +1,8 @@
 import java.util.*;
 
 public class PuzzleSolver {
-    static long triesAmt = 0;
-
-    // places pieces on the board using pure brute force method
-    public static boolean placePieces(List<Piece> pieces, int N, int M, Scanner scanner) {
-        char[][] board = new char[N][M];
-        for (int i = 0; i < N; i++) {
-            Arrays.fill(board[i], ' ');
-        }
-
-        long startTime = System.nanoTime();
-        boolean solutionFound = tryAllConfigurations(board, pieces, N, M);
-        long endTime = System.nanoTime();
-
-        if (solutionFound && isBoardFull(board)) {
-            Main.printBoard(board);
-            long duration = (endTime - startTime) / 1000000; // duration in ms
-            System.out.println("Jumlah kasus yang ditinjau: " + triesAmt);
-            System.out.println("Waktu eksekusi: " + duration + " ms");
-            Main.saveSolution(board, scanner);
-            Main.saveSolutionAsImage(board, scanner); 
-            return true;
-        } else {
-            long duration = (endTime - startTime) / 1000000; // duration in ms
-            System.out.println();
-            System.out.println("Tidak ada solusi yang ditemukan.");
-            System.out.println();
-            System.out.println("Jumlah kasus yang ditinjau: " + triesAmt);
-            System.out.println("Waktu eksekusi: " + duration + " ms");
-            return false;
-        }
-    }
-
-    // checks whether the board is fully filled with pieces
-    private static boolean isBoardFull(char[][] board) {
-        for (char[] row : board) {
-            for (char cell : row) {
-                if (cell == ' ') {
-                    return false; 
-                }
-            }
-        }
-        return true; 
-    }
-
     // tries all possible configuration of the pieces
-    public static boolean tryAllConfigurations(char[][] board, List<Piece> pieces, int N, int M) {
+    public static long tryAllConfigurations(char[][] board, List<Piece> pieces, int N, int M, long triesAmt) {
         List<List<Piece>> allPermutations = generatePermutations(pieces);
         
         for (List<Piece> permutation : allPermutations) {
@@ -54,11 +10,11 @@ public class PuzzleSolver {
             clearBoard(board); // reset board for each iteration
             
             if (tryPlaceAllPieces(board, permutation, N, M)) {
-                return true;
+                return triesAmt; // all pieces are succesfully placed on the board
             }
         }
         
-        return false;
+        return -triesAmt; // no solution found
     }
     
     // resets the working board to empty
@@ -162,5 +118,17 @@ public class PuzzleSolver {
                 }
             }
         }
+    }
+
+    // checks whether the board is fully filled with pieces
+    public static boolean isBoardFull(char[][] board) {
+        for (char[] row : board) {
+            for (char cell : row) {
+                if (cell == ' ') {
+                    return false; 
+                }
+            }
+        }
+        return true; 
     }
 }

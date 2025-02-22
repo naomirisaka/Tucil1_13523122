@@ -81,7 +81,7 @@ class Piece {
         return new Piece(charArrayToList(rotated), letter);
     }
 
-    // flips a piece
+    // flips a piece horizontally
     private Piece flipPiece() {
         int h = shape.length;
         int w = shape[0].length;
@@ -97,7 +97,7 @@ class Piece {
         return new Piece(charArrayToList(flipped), letter);
     }
 
-    // converts a char matrix to a list of strings for piece initialization
+    // converts a char matrix to a list of strings
     private List<String> charArrayToList(char[][] arr) {
         List<String> list = new ArrayList<>();
         for (char[] row : arr) {
