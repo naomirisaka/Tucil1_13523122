@@ -13,7 +13,6 @@ public class PuzzleSolver {
                 return triesAmt; // all pieces are succesfully placed on the board
             }
         }
-        
         return -triesAmt; // no solution found
     }
     
