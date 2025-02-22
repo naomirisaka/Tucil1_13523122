@@ -1,0 +1,18 @@
+3 7 10
+DEFAULT
+H
+B
+X
+SS
+O
+OO
+O
+I
+Y
+  W
+WWW
+  W
+ F
+FF
+F
+A

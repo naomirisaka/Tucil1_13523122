@@ -1,0 +1,16 @@
+4 8 10
+DEFAULT
+AAA
+A A
+AAA
+LL
+YY
+XX
+EEE
+  E
+U
+DDD
+JJJJ
+J JJ
+GG
+H
