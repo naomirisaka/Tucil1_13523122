@@ -6,7 +6,7 @@ class Piece {
     char[][] shape;
 
     // constructor
-    Piece(List<String> shapeLines, char letter) {
+    public Piece(List<String> shapeLines, char letter) {
         this.letter = letter;
         int height = shapeLines.size();
         int width = 0;
@@ -30,9 +30,10 @@ class Piece {
         }
     }
 
-    // gets all possible orientations of a piece 
+    // gets all possible orientations of a piece
     public List<Piece> getAllOrientations() {
         List<Piece> orientations = new ArrayList<>();
+        orientations.add(this);  // og orientation
 
         // rotations
         Piece rotated1 = rotatePiece();
@@ -45,7 +46,6 @@ class Piece {
         Piece flipped2 = flipped1.rotatePiece();
         Piece flipped3 = flipped2.rotatePiece();
 
-        orientations.add(this);
         orientations.add(rotated1);
         orientations.add(rotated2);
         orientations.add(rotated3);
@@ -63,26 +63,34 @@ class Piece {
         int w = shape[0].length;
         char[][] rotated = new char[w][h];
 
-        // piece adjustment after rotation
+        // piece adjustment after rotating
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                rotated[i][j] = ' ';
+            }
+        }
+
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
-                rotated[j][h - 1 - i] = shape[i][j];
+                if (shape[i][j] != ' ') {
+                    rotated[j][h - 1 - i] = shape[i][j];
+                }
             }
         }
 
         return new Piece(charArrayToList(rotated), letter);
     }
 
-    // flips a piece horizontally
+    // flips a piece
     private Piece flipPiece() {
         int h = shape.length;
         int w = shape[0].length;
         char[][] flipped = new char[h][w];
 
-        // piece adjustment after flip
+        // piece adjustment after flipping
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
-                flipped[i][w - 1 - j] = shape[i][j];
+                flipped[i][j] = shape[i][w - 1 - j];
             }
         }
 
@@ -98,7 +106,7 @@ class Piece {
         return list;
     }
 
-    // prints a piece 
+    // prints a piece
     public void printPiece() {
         for (char[] row : shape) {
             System.out.println(new String(row));

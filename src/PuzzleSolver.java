@@ -14,20 +14,32 @@ public class PuzzleSolver {
         boolean solutionFound = tryAllConfigurations(board, pieces, N, M);
         long endTime = System.nanoTime();
 
-        if (solutionFound) {
+        if (solutionFound && isBoardFull(board)) {
             Main.printBoard(board);
+            long duration = (endTime - startTime) / 1000000; // duration in ms
+        System.out.println("Jumlah kasus yang ditinjau: " + triesAmt);
+        System.out.println("Waktu eksekusi: " + duration + " ms");
+            Main.saveSolution(board, scanner);
+            Main.saveSolutionAsImage(board, scanner); 
+            return true;
         } 
 
         long duration = (endTime - startTime) / 1000000; // duration in ms
         System.out.println("Jumlah kasus yang ditinjau: " + triesAmt);
         System.out.println("Waktu eksekusi: " + duration + " ms");
-        
-        if (solutionFound) {
-            Main.saveSolution(board, scanner);
-            Main.saveSolutionAsImage(board, scanner); 
-        } 
-        
-        return solutionFound;
+        return false;
+    }
+
+    // checks whether the board is fully filled with pieces
+    private static boolean isBoardFull(char[][] board) {
+        for (char[] row : board) {
+            for (char cell : row) {
+                if (cell == ' ') {
+                    return false; 
+                }
+            }
+        }
+        return true; 
     }
 
     // tries all possible configuration of the pieces

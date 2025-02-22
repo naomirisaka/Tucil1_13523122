@@ -75,8 +75,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        System.out.println("=================================================================================================================================================");
-        System.out.println("\r\n" + 
+        System.out.println("=============================================================================================================================================");
+        System.out.println("\r\n" +             
         "   .___________    __________                    .__                 __________                  _________      .__                     \r\n" + 
         "   |   \\_____  \\   \\______   \\__ ________________|  |   ___________  \\______   _______  ____    /   _____/ ____ |  |___  __ ___________ \r\n" + 
         "   |   |/  / \\  \\   |     ___|  |  \\___   \\___   |  | _/ __ \\_  __ \\  |     ___\\_  __ \\/  _ \\   \\_____  \\ /  _ \\|  |\\  \\/ _/ __ \\_  __ \\\r\n" + 
@@ -84,19 +84,22 @@ public class Main {
         "   |___\\_____\\ \\_/  |____|   |____//_____ /_____ |____/\\___  |__|     |____|    |__|   \\____/  /_______  /\\____/|____/\\_/  \\___  |__|   \r\n" + 
         "            \\__>                       \\/     \\/         \\/                                          \\/                      \\/       \r\n" + 
         "");
-        System.out.println("================================================================================================================================================");
+        System.out.println("=============================================================================================================================================");
         System.out.println();
 
         Scanner scanner = new Scanner(System.in);
         
-        System.out.print("Masukkan nama file puzzle: ");
+        System.out.println("Selamat datang di program IQ Puzzle Pro Solver!");
+        System.out.println("Program ini akan membantu Anda menyelesaikan IQ Pro Puzzle.");
+        System.out.println();
+        System.out.print("Masukkan nama file puzzle yang ingin diselesaikan: ");
         String inputFileName = scanner.nextLine();
 
         // empty file name validation
         while (inputFileName.isEmpty()) { 
             System.out.println("Nama file tidak boleh kosong");
             System.out.println();
-            System.out.print("Masukkan nama file puzzle: ");
+            System.out.print("Masukkan nama file puzzle yang ingin diselesaikan: ");
             inputFileName = scanner.nextLine();
         }
 
@@ -104,7 +107,7 @@ public class Main {
         while (!inputFileName.endsWith(".txt")) { 
             System.out.println("File harus berekstensi .txt");
             System.out.println();
-            System.out.print("Masukkan nama file puzzle: ");
+            System.out.print("Masukkan nama file puzzle yang ingin diselesaikan: ");
             inputFileName = scanner.nextLine();
         }
 
@@ -115,6 +118,7 @@ public class Main {
                 List<Piece> pieces = readInputFile(fileScanner);    
                 assignColors(pieces);
                 if (!PuzzleSolver.placePieces(pieces, N, M, scanner)) {
+                    System.out.println();
                     System.out.println("Tidak ada solusi yang ditemukan.");
                 }
             } catch (Exception e) {
@@ -126,97 +130,99 @@ public class Main {
         } catch (FileNotFoundException e) {
             System.out.println("File tidak ditemukan.");
         }
+        
         scanner.close();
     }
 
-    // reads input file and validate its contents
-    private static List<Piece> readInputFile(Scanner fileScanner) throws Exception {
-        // N (number of rows) validation 
-        if (!fileScanner.hasNextInt()){  
-            throw new Exception("File tidak memiliki nilai N.");
-        } 
-        N = fileScanner.nextInt();
-        if (N <= 0) {
-            throw new Exception("N harus bernilai lebih besar dari 0.");
-        }
-        
-        // M (number of cols) validation
-        if (!fileScanner.hasNextInt()){
-            throw new Exception("File tidak memiliki nilai M.");
-        }
-        M = fileScanner.nextInt();
-        if (M <= 0) {
-            throw new Exception("M harus bernilai lebih besar dari 0.");
+// reads input file and validate its contents
+private static List<Piece> readInputFile(Scanner fileScanner) throws Exception {
+    // N (number of rows) validation 
+    if (!fileScanner.hasNextInt()) {  
+        throw new Exception("File tidak memiliki nilai N.");
+    } 
+    N = fileScanner.nextInt();
+    if (N <= 0) {
+        throw new Exception("N harus bernilai lebih besar dari 0.");
+    }
+    
+    // M (number of cols) validation
+    if (!fileScanner.hasNextInt()) {
+        throw new Exception("File tidak memiliki nilai M.");
+    }
+    M = fileScanner.nextInt();
+    if (M <= 0) {
+        throw new Exception("M harus bernilai lebih besar dari 0.");
+    }
+
+    // P (number of pieces) validation
+    if (!fileScanner.hasNextInt()) {
+        throw new Exception("File tidak memiliki nilai P.");
+    }
+    int P = fileScanner.nextInt();  // number of pieces
+    if (P <= 0) {
+        throw new Exception("P harus bernilai lebih besar dari 0.");
+    }
+
+    // configuration type validation 
+    fileScanner.nextLine(); 
+    if (!fileScanner.hasNextLine()) {
+        throw new Exception("File tidak memiliki tipe konfigurasi.");
+    }
+    String configType = fileScanner.nextLine().trim(); // configuration type
+    if (configType.isEmpty()) {
+        throw new Exception("Tipe konfigurasi tidak boleh kosong.");
+    }
+    if (!configType.equalsIgnoreCase("default")) {
+        throw new Exception("Tipe konfigurasi yang tersedia adalah 'default'.");
+    }
+
+    // pieces reading and validation
+    Map<Character, List<String>> pieceShapes = new LinkedHashMap<>();
+    Set<Character> usedLetters = new HashSet<>(); 
+    Character currPiece = null;
+
+    while (fileScanner.hasNextLine()) {
+        String pieceLine = fileScanner.nextLine(); // Keep leading spaces
+        if (pieceLine.trim().isEmpty()) { 
+            currPiece = null; 
+            continue;
         }
 
-        // P (number of pieces) validation
-        if (!fileScanner.hasNextInt()){
-            throw new Exception("File tidak memiliki nilai P.");
-        }
-        int P = fileScanner.nextInt();  // number of pieces
-        if (P <= 0) {
-            throw new Exception("P harus bernilai lebih besar dari 0.");
-        }
-    
-        // configuration type validation 
-        fileScanner.nextLine(); 
-        if (!fileScanner.hasNextLine()){
-            throw new Exception("File tidak memiliki tipe konfigurasi.");
-        }
-        String configType = fileScanner.nextLine().trim(); // configuration type
-        if (configType.isEmpty()){
-            throw new Exception("Tipe konfigurasi tidak boleh kosong.");
-        }
-        if (!configType.equalsIgnoreCase("default")){
-            throw new Exception("Tipe konfigurasi yang tersedia adalah 'default'.");
-        }
-        
-        // pieces reading and validation
-        Map<Character, List<String>> pieceShapes = new LinkedHashMap<>();
-        Set<Character> usedLetters = new HashSet<>(); 
-        Character currPiece = null;
-        
-        while (fileScanner.hasNextLine()) {
-            String pieceLine = fileScanner.nextLine().trim();
-            if (pieceLine.isEmpty()) { 
-                currPiece = null; 
-                continue;
+        char firstLetter = pieceLine.trim().charAt(0);
+        for (char c : pieceLine.trim().toCharArray()) {
+            // alphabet validation 
+            if (!Character.isLetter(c) && c != ' ') { 
+                throw new Exception("Terdapat baris yang mengandung karakter bukan alphabet.");
             }
-            
-            char firstLetter = pieceLine.charAt(0);
-            for (char c : pieceLine.toCharArray()) {
-                // alphabet validation 
-                if (!Character.isLetter(c) && c != ' ') { 
-                    throw new Exception("Terdapat baris yang mengandung karakter bukan alphabet.");
-                }
-                if (c != firstLetter && c != ' ') {
-                    throw new Exception("Terdapat baris yang mengandung lebih dari satu huruf.");
-                }
+            if (c != firstLetter && c != ' ') {
+                throw new Exception("Terdapat baris yang mengandung lebih dari satu huruf.");
             }
-        
-            // unique letter validation
-            if (currPiece != null && firstLetter != currPiece && usedLetters.contains(firstLetter)) {
-                throw new Exception("Huruf '" + firstLetter + "' digunakan oleh lebih dari satu piece yang terpisah.");
-            }
-            
-            usedLetters.add(firstLetter); 
-            pieceShapes.putIfAbsent(firstLetter, new ArrayList<>());
-            pieceShapes.get(firstLetter).add(pieceLine);
-            currPiece = firstLetter; 
         }
-        
-        // P validation according to the number of pieces read
-        if (pieceShapes.size() != P) {
-            throw new Exception("Jumlah piece tidak sesuai dengan nilai P.");
+
+        // unique letter validation
+        if (currPiece != null && firstLetter != currPiece && usedLetters.contains(firstLetter)) {
+            throw new Exception("Huruf '" + firstLetter + "' digunakan oleh lebih dari satu piece yang terpisah.");
         }
-        
-        List<Piece> pieces = new ArrayList<>();
-        for (Map.Entry<Character, List<String>> entry : pieceShapes.entrySet()) {
-            pieces.add(new Piece(entry.getValue(), entry.getKey()));
-        }
-        
-        return pieces;
-    }          
+
+        usedLetters.add(firstLetter); 
+        pieceShapes.putIfAbsent(firstLetter, new ArrayList<>());
+        pieceShapes.get(firstLetter).add(pieceLine); // Add the whole line including spaces
+        currPiece = firstLetter; 
+    }
+
+    // P validation according to the number of pieces read
+    if (pieceShapes.size() != P) {
+        throw new Exception("Jumlah piece tidak sesuai dengan nilai P.");
+    }
+
+    List<Piece> pieces = new ArrayList<>();
+    for (Map.Entry<Character, List<String>> entry : pieceShapes.entrySet()) {
+        pieces.add(new Piece(entry.getValue(), entry.getKey()));
+    }
+
+    return pieces;
+}
+   
     
     // assigns colors to pieces based on their letters
     private static void assignColors(List<Piece> pieces) {
@@ -235,6 +241,8 @@ public class Main {
     
     // displays solution board in CLI 
     public static void printBoard(char[][] board) {
+        System.out.println();
+        System.out.println("Solusi ditemukan.");
         for (char[] row : board) {
             for (char cell : row) {
                 if (cell == ' ') {
