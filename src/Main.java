@@ -141,7 +141,11 @@ public class Main {
                     System.out.println();
                     System.out.println("Tidak ada solusi yang ditemukan.");
                     System.out.println();
-                    System.out.println("Jumlah kasus yang ditinjau: " + -triesAmt);
+                    if (triesAmt < 0){
+                        System.out.println("Jumlah kasus yang ditinjau: " + -triesAmt);
+                    } else {
+                        System.out.println("Jumlah kasus yang ditinjau: " + triesAmt);
+                    }
                     System.out.println("Waktu eksekusi: " + duration + " ms");
                 }
             } catch (Exception e) {
