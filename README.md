@@ -60,4 +60,4 @@ IQ Puzzler Pro merupakan sebuah permainan papan yang dikembangkan oleh SmartGame
 4. Masukkan pilihan Anda ketika program menawarkan untuk menyimpan solusi dalam bentuk file teks (.txt).
 5. Masukkan pilihan Anda ketika program menawarkan untuk menyimpan solusi dalam bentuk file gambar (.png).
 6. Jika Anda memilih untuk menyimpan file solusi, file akan disimpan di folder test.
-7. Jika file masukan tidak memiliki solusi, program akan menampilkan pesan bahwa tidak ditemukan solusi dan program akan berakhir.
+7. Jika file masukan tidak memiliki solusi, program akan menampilkan pesan bahwa tidak ditemukan solusi.
