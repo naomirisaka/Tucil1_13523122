@@ -215,10 +215,11 @@ public class Main {
                 continue;
             }
 
-            char firstLetter = Character.toUpperCase(pieceLine.trim().charAt(0));  // set all letters to uppercase
-            for (char c : pieceLine.trim().toCharArray()) {
+            String upperPieceLine = pieceLine.trim().toUpperCase();   // set all letters to uppercase
+            char firstLetter = upperPieceLine.charAt(0);
+            for (char c : upperPieceLine.toCharArray()) {
                 // alphabet validation 
-                if (!Character.isLetter(c) && c != ' ') { 
+                if (!Character.isLetter(c) && c != ' '){
                     throw new Exception("Terdapat baris yang mengandung karakter bukan alphabet.");
                 }
                 if (c != firstLetter && c != ' ') {
